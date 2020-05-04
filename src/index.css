@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:500');
+@import url('https://fonts.googleapis.com/css?family=Ubuntu+Mono');
+
+
+body {
+  font-family: Ubuntu, sans-serif;
+  text-align: left;
+  font-size: 20px;
+  padding: 10px 10px 10px 10px;
+}
+
+#stage {
+  /*border-color and background-color are in the html because they are dynamic and depend on vue.js's data model*/
+  border-style: solid;
+  border-width: 30px;
+  width: 800px;
+  /*float: left;*/
+  border-radius: 10px;
+  margin: 20px 0px 20px 0px;
+}
+
+#default-theme-selector {
+  font-family: Ubuntu, sans-serif;
+  font-size: 20px;
+  border: 5px solid #8cbc46;
+  border-radius: 5px;
+}
+
+#container {
+  width: 100%;
+}
+
+#result {
+  background-color: #efefef;
+  font-family: Ubuntu-mono, monospace;
+  margin: 20px 0px 20px 0px;
+  padding: 10px 10px 10px 10px;
+  width: 840px;
+  border-radius: 0px 10px 10px 0px;
+  border-left: 5px solid #8cbc46;
+}
+
+#nameInput {
+  width: 700px;
+  border-color: transparent;
+  color: #8cbc46;
+  font-size: 30px;
+  font-family: Ubuntu, sans-serif;
+  text-decoration: underline;
+}
+#nameInput:hover {
+  color: darkgreen;
+}
+
+h2 {
+  color: black;
+  font-weight: bold;
+  font-size: 35px;
+}
+
+label {
+  font-size: 18px;
+}
+
+#copyBtnLabel {
+  font-size: 30px;
+  color: #8cbc46;
+}
+
+#app {
+  width: 840px;
+}
+
+.btn {
+  color: #8cbc46;
+  background-color: white;
+  border-style: solid;
+  border-color: #8cbc46;
+  border-width: 5px;
+  border-radius: 5px;
+  font-size: 19px;
+  font-family: Ubuntu, sans-serif;
+  height: 40px;
+  margin-right: 5px;
+}
+.btn:hover {
+  background-color: #8cbc46;
+  color: white;
+}
+
+#copyBtn {
+  float: right;
+  background-color: #8cbc46;
+  color: white;
+}
+#copyBtn:hover {
+  color: darkgreen;
+}
+
+#showMoreOptions, #importTheme {
+  color: lightgrey;
+}
+#showMoreOptions:hover, #importTheme:hover {
+  color: grey;
+  text-decoration: underline;
+}
+
+input[type="color"] {
+  border: 5px solid #8cbc46;
+  border-radius: 5px;
+}
+
+#generalColorPicker {
+  visibility: hidden;
+}
