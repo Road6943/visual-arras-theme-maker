@@ -1,0 +1,160 @@
+<html>
+  <head>
+    <title>Visual Arras.io Theme Maker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://unpkg.com/konva@4.0.0/konva.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/vue-konva@1.0.7/lib/vue-konva.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js"></script>
+  </head>
+  
+  <body>
+    <div id="app">
+      
+      <p id="importTheme" @click="importTheme()">Import Theme</p>
+      
+      <button id="copyBtn" class="btn" data-clipboard-target="#result" onclick="alert('Your Theme Code has been copied. Enjoy!')">Copy Theme Code</button>
+    
+      <h2>Click on an object to change its color!</h2>
+   
+      <button id="roomBoundaryBtn" class="btn" @click="switchRoomBoundaryType()">Change Room Boundary</button>
+      <button class="btn" @click="changeColor('black')">Change Borders/Health Bar Background</button>
+      <button class="btn" @click="changeBorderSize()" class='success'>Change Border Size</button>
+      
+      
+      
+      <p id="showMoreOptions" @click="showMoreOptions = !showMoreOptions">Show More Options</p>
+      <div v-if="showMoreOptions">
+      <select id="default-theme-selector" @change="fillDefaultTheme()">
+        <option value="none" selected disabled>Fill in a Default Theme</option>
+        <option value="normal">Light Colors</option>
+        <option value="dark">Dark Colors</option>
+        <option value="natural">Natural</option>
+        <option value="classic">Classic</option>
+        <option value="pumpkin">Pumpkin Skeleton</option>
+        <option value="forest">Forest</option>
+        <option value="midnight">Midnight</option>
+        <option value="pastel">Snow</option>
+        <option value="ocean">Coral Reef</option>
+        <option value="badlands">Badlands</option>
+        <option value="bleach">Bleach</option>
+        <option value="space">Space</option>
+        <option value="nebula">Nebula</option>
+        <option value="desert">Desert</option>
+        <option value="eggplant">Eggplant</option>
+        <option value="solarized">Solarized Dark</option>
+      </select> <br/><br/>
+      
+      <button @click="getRandomTheme()" class='btn'>Get Random Theme</button> <br/><br/>
+        
+      <label for="yellowPicker">Change Yellow (Bullet Penetration): </label>
+      <input type="color" name="yellowPicker" id="yellowPicker" @change="theme.content.yellow = document.querySelector('#yellowPicker').value"></input> <br/><br/>
+      
+      <label for="lavenderPicker">Change Lavender (Pentagon Nest Background): </label>
+      <input type="color" name="lavenderPicker" id="lavenderPicker" @change="theme.content.lavender = document.querySelector('#lavenderPicker').value"></input> <br/><br/>
+    
+      <label for="lgreyPicker">Change Lgrey (No Idea What This Does): </label>
+      <input type="color" name="lgreyPicker" id="lgreyPicker" @change="theme.content.lgrey = document.querySelector('#lgreyPicker').value"></input> <br/><br/>
+  
+      <label for="guiblackPicker">Change Guiblack (Plays a role in deciding the color of the Map Boundary): </label>
+      <input type="color" name="guiblackPicker" id="guiblackPicker" @change="theme.content.guiblack = document.querySelector('#guiblackPicker').value"></input> <br/><br/>
+    </div>
+
+
+
+ 
+      <div id="container">
+        <v-stage ref="stage" :config="stageSize" id="stage" v-bind:style="{'border-color': `${roomBoundaryColor}`, 'background-color': `${theme.content.white}`}">
+          <v-layer ref="layer">
+            
+            <!-- Map Background -->
+            <v-rect @click="changeColor('white')" :config="{x:0, y:0, width:800, height:500, fill:`${theme.content.white}`, stroke:`${theme.content.white}`, }"></v-rect>
+            
+            
+            <!-- Blue Team Tank -->
+            <v-rect @click="changeColor('grey')" :config="{x:85, y:80, width:100, height:40, cornerRadius:5, fill:`${theme.content.grey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-rect>
+            <v-circle @click="changeColor('blue')" :config="{x:100, y:100, radius:50, fill:`${theme.content.blue}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-circle>
+
+            
+            <!-- Red Team Tank -->
+            <v-rect @click="changeColor('grey')" :config="{x:85, y:380, width:100, height:40, cornerRadius:5, fill:`${theme.content.grey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-rect>
+            <v-circle @click="changeColor('red')" :config="{x:100, y:400, radius:50, fill:`${theme.content.red}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-circle>
+
+            
+            <!-- Magenta Team Tank -->
+            <v-rect @click="changeColor('grey')" :config="{x:615, y:380, width:100, height:40, cornerRadius:5, fill:`${theme.content.grey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-rect>
+            <v-circle @click="changeColor('magenta')" :config="{x:700, y:400, radius:50, fill:`${theme.content.magenta}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-circle>
+
+            
+            <!-- Green Team Tank -->
+            <v-rect @click="changeColor('grey')" :config="{x:615, y:80, width:100, height:40, cornerRadius:5, fill:`${theme.content.grey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-rect>
+            <v-circle @click="changeColor('green')" :config="{x:700, y:100, radius:50, fill:`${theme.content.green}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-circle>
+
+            
+            <!-- Health Bar Background -->
+            <v-rect @click="changeColor('black')" :config="{x:650, y:165, width:100 ,height:10, cornerRadius:10, fill:`${theme.content.black}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-rect>
+            <!-- Shield Bar/Regen Bar -->
+            <v-rect @click="changeColor('teal')" :config="{x:655, y:169, width:80 ,height:2, cornerRadius:10, fill:`${theme.content.black}`, stroke:`${theme.content.teal}`, strokeWidth:`${theme.content.border * 10}`, }"></v-rect>
+            <!-- Main Health Bar -->
+            <v-rect @click="changeColor('lgreen')" :config="{x:655, y:169, width:45 ,height:2, cornerRadius:10, fill:`${theme.content.black}`, stroke:`${theme.content.lgreen}`,strokeWidth:`${theme.content.border * 10}`, }"></v-rect>
+            
+
+            <!-- Rock -->
+            <v-regular-polygon @click="changeColor('grey')" :config="{x:100, y:250, sides:9, radius:70, fill:`${theme.content.grey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-regular-polygon>
+
+            
+            <!-- Square -->
+            <v-regular-polygon @click="changeColor('gold')" :config="{x:250, y:250, sides:4, radius:40, fill:`${theme.content.gold}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, rotation:45, }"></v-regular-polygon>
+            
+            
+            <!-- Pentagon -->
+            <v-regular-polygon @click="changeColor('purple')" :config="{x:350, y:250, sides:5, radius:40, fill:`${theme.content.purple}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-regular-polygon>
+
+            
+            <!-- Triangle -->
+            <v-regular-polygon @click="changeColor('orange')" :config="{x:450, y:250, sides:3, radius:40, fill:`${theme.content.orange}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-regular-polygon>
+
+            
+            <!-- Eggs -->
+            <v-circle @click="changeColor('vlgrey')" :config="{x:530, y:250, radius:10, fill:`${theme.content.vlgrey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-circle>
+            <v-circle @click="changeColor('vlgrey')" :config="{x:570, y:250, radius:10, fill:`${theme.content.vlgrey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-circle>
+            <v-circle @click="changeColor('vlgrey')" :config="{x:550, y:270, radius:10, fill:`${theme.content.vlgrey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-circle>
+            <v-circle @click="changeColor('vlgrey')" :config="{x:550, y:230, radius:10, fill:`${theme.content.vlgrey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-circle>
+            
+            
+            <!-- Crashers -->
+            <v-regular-polygon @click="changeColor('pink')" :config="{x:650, y:250, sides:3, radius:20, fill:`${theme.content.pink}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, rotation:90, }"></v-regular-polygon>
+            <v-rect @click="changeColor('grey')" :config="{x:740, y:235, width:10, height: 30, cornerRadius:2, fill:`${theme.content.grey}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, }"></v-rect>
+            <v-regular-polygon @click="changeColor('pink')" :config="{x:725, y:250, sides:3, radius:30, fill:`${theme.content.pink}`, stroke:`${theme.content.black}`, strokeWidth:`${theme.content.border * 10}`, rotation:270, }"></v-regular-polygon>
+            
+            
+            <!-- In-Game Text -->
+            <v-text @click="changeColor('guiwhite')" id="inGameText" :config="{x:260, y:400, text:`Your Name`, fontFamily:'Ubuntu', fontSize:60, fill:`${theme.content.guiwhite}`, stroke:`${theme.content.black}`, strokeWidth:4, letterSpacing:-6, drawBorder:true, }"></v-text>
+            
+         
+          </v-layer>
+        </v-stage>
+        
+        <div id="above-theme-container">
+          <button id="copyBtn" class="btn" data-clipboard-target="#result" onclick="alert('Your Theme Code has been copied. Enjoy!')">Copy Theme Code</button>
+          
+          <input type="text" placeholder="Enter Your Theme Name Here" id="nameInput" @change="theme.name = document.querySelector('#nameInput').value"></input>
+
+        </div>
+        
+        
+        <div id="result">
+          {{theme}}
+        </div>
+      </div>
+    
+    
+     
+    <input type="color" id="generalColorPicker"></input>
+      
+    
+
+  </body>
+</html>
