@@ -63,6 +63,7 @@
     </div>
 
 
+    <input type="color" id="generalColorPicker"></input>
 
  
       <div id="container">
@@ -141,6 +142,8 @@
           <button id="copyBtn" class="btn" data-clipboard-target="#result" onclick="alert('Your Theme Code has been copied. Enjoy!')">Copy Theme Code</button>
           
           <input type="text" placeholder="Enter Your Theme Name Here" id="nameInput" @change="theme.name = document.querySelector('#nameInput').value"></input>
+        
+        <input type="text" placeholder="Enter Theme Creator's Name Here" id="authorInput" @change="theme.author = document.querySelector('#authorInput').value"></input>
 
         </div>
         
@@ -150,11 +153,5 @@
         </div>
       </div>
     
-    
-     
-    <input type="color" id="generalColorPicker"></input>
-      
-    
-
   </body>
 </html>
