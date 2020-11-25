@@ -40,7 +40,7 @@ body {
   border-left: 5px solid #8cbc46;
 }
 
-#nameInput {
+#nameInput, #authorInput {
   width: 700px;
   border-color: transparent;
   color: #8cbc46;
@@ -48,7 +48,7 @@ body {
   font-family: Ubuntu, sans-serif;
   text-decoration: underline;
 }
-#nameInput:hover {
+#nameInput:hover, #authorInput:hover {
   color: darkgreen;
 }
 
