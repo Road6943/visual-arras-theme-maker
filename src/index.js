@@ -142,14 +142,23 @@ let app = new Vue({
     
     importTheme: function() {
       
-      let input = prompt("Please enter the theme you wish to import. Note that it must be of the same format used by this theme maker, and cannot look similar to the following format: \n\n RW50ZXIgWW91ciBUaGVtZSBOYW1lIEhlcmUAAIB627y56H7niW3984C1jv3vmcPo6/eqn57/JgBISEg8pMuKvD/gPkHvx0uNat//JgCnp69yb29OjwAAAAA \n\n");
-       
-      input = JSON.parse(input);
+      let input = prompt("Please enter the theme you wish to import. Note that it can now be in any format");
+      
+      // check if a compact Base64 string was entered or a normal json object was entered
+      // "content" will never appear in a base64 string but is in all theme json's
+      if (input.includes("content")) {
+        input = JSON.parse(input);
+      } else {
+        // this func is at the very bottom of this file, thank you CX for providing it
+        input = parseTheme(input);
+      }
       
       for (let property in (this.theme.content)) {
         this.theme.content[property] = input.content[property];
       }
       
+      // change room boundary color because its not changed otherwise
+      this.setRoomBoundaryColor();
     },
     
   },
@@ -554,3 +563,115 @@ const defaultThemes = {
    }
       
 };
+
+
+
+
+
+
+// Thank you to CX for providing this:
+function parseTheme(string){
+  // Compact Base64 Theme Format
+  // - stored as a regular base64 string without trailing equal signs
+  // name + \0 + author + \0 + border byte + (RGB colors)*
+
+  try {
+    let stripped = string.replace(/\s+/g, '')
+    if (stripped.length % 4 == 2)
+      stripped += '=='
+    else if (stripped.length % 4 == 3)
+      stripped += '='
+    let data = atob(stripped)
+
+    let name = 'Unknown Theme', author = ''
+    let index = data.indexOf('\x00')
+    if (index === -1) return null
+    name = data.slice(0, index) || name
+    data = data.slice(index + 1)
+    index = data.indexOf('\x00')
+    if (index === -1) return null
+    author = data.slice(0, index) || author
+    data = data.slice(index + 1)
+    let border = data.charCodeAt(0) / 0xff
+    data = data.slice(1)
+    let paletteSize = Math.floor(data.length / 3)
+    if (paletteSize < 2) return null
+    let colorArray = []
+    for (let i = 0; i < paletteSize; i++) {
+      let red = data.charCodeAt(i * 3)
+      let green = data.charCodeAt(i * 3 + 1)
+      let blue = data.charCodeAt(i * 3 + 2)
+      let color = (red << 16) | (green << 8) | blue
+      colorArray.push('#' + color.toString(16).padStart(6, '0'))
+    }
+    let content = {
+      teal:     colorArray[0],
+      lgreen:   colorArray[1],
+      orange:   colorArray[2],
+      yellow:   colorArray[3],
+      lavender: colorArray[4],
+      pink:     colorArray[5],
+      vlgrey:   colorArray[6],
+      lgrey:    colorArray[7],
+      guiwhite: colorArray[8],
+      black:    colorArray[9],
+
+      blue:     colorArray[10],
+      green:    colorArray[11],
+      red:      colorArray[12],
+      gold:     colorArray[13],
+      purple:   colorArray[14],
+      magenta:  colorArray[15],
+      grey:     colorArray[16],
+      dgrey:    colorArray[17],
+      white:    colorArray[18],
+      guiblack: colorArray[19],
+
+      paletteSize,
+      border,
+    }
+    return { name, author, content }
+  } catch (e) {}
+  try {
+    let output = JSON.parse(string)
+    if (typeof output !== 'object')
+      return null
+    let { name = 'Unknown Theme', author = '', content } = output
+
+    for (let colorHex of [
+      content.teal,
+      content.lgreen,
+      content.orange,
+      content.yellow,
+      content.lavender,
+      content.pink,
+      content.vlgrey,
+      content.lgrey,
+      content.guiwhite,
+      content.black,
+
+      content.blue,
+      content.green,
+      content.red,
+      content.gold,
+      content.purple,
+      content.magenta,
+      content.grey,
+      content.dgrey,
+      content.white,
+      content.guiblack,
+    ]) {
+      if (!/^#[0-9a-fA-F]{6}$/.test(colorHex))
+        return null
+    }
+
+    return {
+      isJSON: true,
+      name: (typeof name === 'string' && name) || 'Unknown Theme',
+      author: (typeof author === 'string' && author) || '',
+      content,
+    }
+  } catch (e) {}
+
+  return null
+}
