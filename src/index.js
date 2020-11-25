@@ -13,6 +13,7 @@ let app = new Vue({
     
     theme: {
       name: 'Enter Your Theme Name Here',
+      author: '',
       content: {
         teal: '#7ADBBC',        // Shield Bar
         lgreen: '#B9E87E',      // Main Health Bar
@@ -48,11 +49,7 @@ let app = new Vue({
     
     changeColor: function(color) {
       
-      if (color === "white") {
-        const confirmed = confirm("By clicking OK, you will proceed to change the color of the entire map background. Click cancel if you were trying to change the color of anything other than the map background color.");
-        
-        if (!confirmed) return;
-      }
+        const originalColor = this.theme.content[color];
       
         const picker = document.querySelector("#generalColorPicker");
         picker.value = this.theme.content[color];
@@ -60,6 +57,14 @@ let app = new Vue({
         picker.onchange = () => {
           this.theme.content[color] = picker.value;
           this.setRoomBoundaryColor();
+          
+          // prevent people from accidently changing the background instead of something else
+          if (color === "white") {
+            const confirmed = confirm("By clicking OK, you will proceed to change the color of the entire map background. Click cancel if you were trying to change the color of anything other than the map background color.");
+          
+            if (!confirmed) this.theme.content[color] = originalColor;
+            this.setRoomBoundaryColor();
+          }
         }
     },
     
