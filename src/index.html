@@ -49,6 +49,14 @@
       
       <button @click="getRandomTheme()" class='btn'>Get Random Theme</button> <br/><br/>
         
+        
+        <label for="lgreen_Picker">Change LightGreen (Main Health Bar, Shiny Shapes): </label>
+      <input type="color" name="lgreen_Picker" id="lgreen_Picker" @change="theme.content.lgreen = document.querySelector('#lgreen_Picker').value"></input> <br/><br/>
+      
+      <label for="teal_Picker">Change Teal (Shield/Regen Bar, Rare Shapes): </label>
+      <input type="color" name="teal_Picker" id="teal_Picker" @change="theme.content.teal = document.querySelector('#teal_Picker').value"></input> <br/><br/>
+      
+        
       <label for="yellowPicker">Change Yellow (Bullet Penetration): </label>
       <input type="color" name="yellowPicker" id="yellowPicker" @change="theme.content.yellow = document.querySelector('#yellowPicker').value"></input> <br/><br/>
       
