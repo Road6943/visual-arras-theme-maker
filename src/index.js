@@ -24,7 +24,7 @@ let app = new Vue({
         vlgrey: '#E8EBF7',      // Eggs
         lgrey: '#AA9F9E',       // Color 7, Almost Never Used
         guiwhite: '#FFFFFF',    // In-Game Text
-        black: '#484848',       // Borders, Text Outlines, Health Bar Background
+        black: '#484848',       // Borders, Text Outlines, Health Bar Background, Smasher corners, Rogue Palisade?
         blue: '#3CA4CB',        // Top-Left Team (4TDM), Left Team (2TDM), FFA Player Color
         green: '#8ABC3F',       // Top-Right Team (4TDM), Right Team (2TDM)
         red: '#E03E41',         // Bottom-Right Team (4TDM), FFA Enemy Color
@@ -142,11 +142,34 @@ let app = new Vue({
     
     importTheme: function() {
       
-      let input = prompt("Please enter the theme you wish to import. Note that it can now be in any format");
+      let input = prompt("Please enter the theme you wish to import. Note that it can now be in any format").trim();
       
+      // Tiger Theme
+      if (input.startsWith('TIGER_JSON')) {
+				// remove TIGER_JSON from start of string
+				let tigerTheme = input.substring( 'TIGER_JSON'.length );
+				tigerTheme = JSON.parse(tigerTheme);
+        
+        input = {
+          name: tigerTheme.themeDetails.name,
+          author: tigerTheme.themeDetails.author,
+          content: {
+            paletteSize: 10,
+            border: tigerTheme.config.themeColor.border,
+          },
+        };
+
+        let colorNamesInOrder = ["teal","lgreen","orange","yellow","lavender","pink","vlgrey","lgrey","guiwhite","black","blue","green","red","gold","purple","magenta","grey","dgrey","white","guiblack"];
+
+        let tcTable = tigerTheme.config.themeColor.table;
+        for (let i = 0; i < colorNamesInOrder.length; i++) {
+          input.content[colorNamesInOrder[i]] = tcTable[i];
+        }
+        
+			}
       // check if a compact Base64 string was entered or a normal json object was entered
       // "content" will never appear in a base64 string but is in all theme json's
-      if (input.includes("content")) {
+      else if (input.includes("content")) {
         input = JSON.parse(input);
       } else {
         // this func is at the very bottom of this file, thank you CX for providing it
@@ -156,6 +179,9 @@ let app = new Vue({
       for (let property in (this.theme.content)) {
         this.theme.content[property] = input.content[property];
       }
+      
+      this.theme.name = input?.name || 'Enter Name';
+      this.theme.author = input?.author || 'Enter Author';
       
       // change room boundary color because its not changed otherwise
       this.setRoomBoundaryColor();
